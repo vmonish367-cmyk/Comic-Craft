@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComicCraft - AI 5-Panel Comic Creator</title>
+    <!-- Google Fonts for Comic Book Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-yellow: #ffdf00;
+            --accent-red: #ff3344;
+            --accent-blue: #00b4d8;
+            --accent-purple: #7928ca;
+            --text-light: #f0f6fc;
+            --text-muted: #8b949e;
+            --comic-border: 3px solid #000;
+            --comic-shadow: 6px 6px 0px #000;
+            --comic-shadow-hover: 3px 3px 0px #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle, rgba(255, 223, 0, 0.08) 2px, transparent 2px),
+                radial-gradient(circle, rgba(255, 51, 68, 0.05) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            color: var(--text-light);
+            font-family: 'Comic Neue', cursive, sans-serif;
+            min-height: 100vh;
+            padding: 30px 16px;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* Comic Header */
+        .comic-header {
+            text-align: center;
+            margin-bottom: 36px;
+            position: relative;
+        }
+
+        .badge-pill {
+            display: inline-block;
+            background: var(--accent-yellow);
+            color: #000;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 1px;
+            font-size: 1.15rem;
+            padding: 6px 18px;
+            border: var(--comic-border);
+            border-radius: 50px;
+            box-shadow: 4px 4px 0 #000;
+            transform: rotate(-2deg);
+            margin-bottom: 12px;
+        }
+
+        h1.logo-title {
+            font-family: 'Bangers', cursive;
+            font-size: 4.2rem;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 4px 4px 0 #000, 7px 7px 0 var(--accent-red);
+            line-height: 1.05;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 620px;
+            margin: 0 auto;
+            font-weight: 700;
+        }
+
+        /* Form Card */
+        .comic-card {
+            background: #ffffff;
+            color: #111;
+            border-radius: 16px;
+            border: 4px solid #000;
+            box-shadow: var(--comic-shadow);
+            padding: 36px 32px;
+            position: relative;
+        }
+
+        .comic-card::before {
+            content: "ISSUE #1";
+            position: absolute;
+            top: -16px;
+            right: 28px;
+            background: var(--accent-red);
+            color: #fff;
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            padding: 4px 14px;
+            border: 2px solid #000;
+            box-shadow: 3px 3px 0 #000;
+            transform: rotate(3deg);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-family: 'Bangers', cursive;
+            font-size: 1.45rem;
+            letter-spacing: 1px;
+            color: #111;
+            margin-bottom: 8px;
+        }
+
+        .label-hint {
+            font-family: 'Comic Neue', cursive;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #555;
+            margin-left: 6px;
+        }
+
+        textarea, input[type="text"], select {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.1rem;
+            font-family: 'Comic Neue', cursive;
+            font-weight: 700;
+            border: 3px solid #000;
+            border-radius: 10px;
+            background: #fff;
+            color: #111;
+            box-shadow: 3px 3px 0 #000;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        textarea:focus, input[type="text"]:focus, select:focus {
+            background: #fffdf0;
+            border-color: #000;
+            box-shadow: 4px 4px 0 var(--accent-blue);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 110px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            h1.logo-title {
+                font-size: 3.2rem;
+            }
+            .comic-card {
+                padding: 24px 18px;
+            }
+        }
+
+        /* Preset Chips */
+        .preset-container {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .preset-chip {
+            background: #f1f3f5;
+            border: 2px solid #000;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #000;
+            transition: transform 0.1s;
+        }
+
+        .preset-chip:hover {
+            transform: translate(-1px, -1px);
+            background: var(--accent-yellow);
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            margin-top: 32px;
+            background: var(--accent-red);
+            color: #fff;
+            font-family: 'Bangers', cursive;
+            font-size: 2.1rem;
+            letter-spacing: 2px;
+            padding: 16px;
+            border: 4px solid #000;
+            border-radius: 12px;
+            box-shadow: 6px 6px 0 #000;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-shadow: 2px 2px 0 #000;
+        }
+
+        .btn-submit:hover {
+            background: #ff1f34;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 #000;
+        }
+
+        .btn-submit:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #000;
+        }
+
+        /* Features Bar */
+        .pipeline-features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 32px;
+            text-align: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .feat-item {
+            background: var(--card-bg);
+            border: 2px solid #30363d;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 0.95rem;
+            color: #c9d1d9;
+        }
+
+        .feat-item strong {
+            color: var(--accent-yellow);
+        }
+
+        /* Loading Overlay */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(13, 17, 23, 0.92);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .spinner-burst {
+            width: 100px;
+            height: 100px;
+            border: 8px solid var(--accent-yellow);
+            border-top: 8px solid var(--accent-red);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin-bottom: 24px;
+            box-shadow: 0 0 24px rgba(255, 223, 0, 0.4);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2.8rem;
+            color: var(--accent-yellow);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .loading-step {
+            font-size: 1.25rem;
+            color: #f0f6fc;
+            font-weight: 700;
+            max-width: 480px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="comic-header">
+            <div class="badge-pill">&#9733; POWERED BY GEMINI 1.5 & DIFFUSERS &#9733;</div>
+            <h1 class="logo-title">COMICCRAFT</h1>
+            <p class="subtitle">Turn your imagination into personalized 5-panel comic strips complete with dialogue, dynamic art, and instant PDF download!</p>
+        </header>
+
+        <!-- Creation Form -->
+        <div class="comic-card">
+            <form action="/generate" method="POST" id="comicForm" onsubmit="showLoading()">
+                
+                <!-- Story Prompt -->
+                <div class="form-group">
+                    <label for="prompt">
+                        1. Story Prompt <span class="label-hint">(What is this episode about?)</span>
+                    </label>
+                    <textarea 
+                        name="prompt" 
+                        id="prompt" 
+                        placeholder="e.g. A rogue time traveler accidentally changes the outcome of the first pizza recipe, causing a hilarious temporal paradox." 
+                        required>A rogue time traveler accidentally alters the creation of pizza in ancient Naples, sparking a delicious culinary revolution across centuries.</textarea>
+                    
+                    <div class="preset-container">
+                        <span class="preset-chip" onclick="setPreset('A cyberpunk delivery pilot uncovers an encrypted cyborg chip hidden inside a midnight ramen order.')">Ramen Cyberpunk</span>
+                        <span class="preset-chip" onclick="setPreset('An archaeologist deep in an Egyptian pyramid awakens a sarcastic feline deity who demands tuna.')">Ancient Cat God</span>
+                        <span class="preset-chip" onclick="setPreset('A quiet librarian discovers that touching rare first-edition books grants the superpowers of their authors.')">Mystic Library</span>
+                        <span class="preset-chip" onclick="setPreset('A rookie superhero on their first patrol gets stuck in a tree rescuing the mayor\'s pet dragon.')">Rookie Hero</span>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Main Character Name -->
+                    <div class="form-group">
+                        <label for="character_name">
+                            2. Main Character Name
+                        </label>
+                        <input 
+                            type="text" 
+                            name="character_name" 
+                            id="character_name" 
+                            value="Captain Nova" 
+                            placeholder="e.g. Captain Nova, Detective Sarah" 
+                            required>
+                    </div>
+
+                    <!-- Setting Dropdown -->
+                    <div class="form-group">
+                        <label for="setting">
+                            3. Setting
+                        </label>
+                        <select name="setting" id="setting">
+                            <option value="Neo-Tokyo Cyberpunk Metropolis" selected>Neo-Tokyo Cyberpunk Metropolis</option>
+                            <option value="Haunted Victorian Manor">Haunted Victorian Manor</option>
+                            <option value="Alien Nebula Space Station">Alien Nebula Space Station</option>
+                            <option value="Enchanted Fantasy Kingdom">Enchanted Fantasy Kingdom</option>
+                            <option value="1940s Noir Rainy Alleyways">1940s Noir Rainy Alleyways</option>
+                            <option value="Retro 1980s Neon Suburbia">Retro 1980s Neon Suburbia</option>
+                            <option value="Post-Apocalyptic Wasteland">Post-Apocalyptic Wasteland</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Story Tone Dropdown -->
+                    <div class="form-group">
+                        <label for="tone">
+                            4. Story Tone
+                        </label>
+                        <select name="tone" id="tone">
+                            <option value="Action-Packed & Heroic" selected>Action-Packed & Heroic</option>
+                            <option value="Whimsical Comedy & Satire">Whimsical Comedy & Satire</option>
+                            <option value="Dark & Gritty Mystery">Dark & Gritty Mystery</option>
+                            <option value="Sci-Fi Thriller & High Stakes">Sci-Fi Thriller & High Stakes</option>
+                            <option value="Heartwarming Adventure">Heartwarming Adventure</option>
+                        </select>
+                    </div>
+
+                    <!-- Art Style Dropdown -->
+                    <div class="form-group">
+                        <label for="style">
+                            5. Art Style
+                        </label>
+                        <select name="style" id="style">
+                            <option value="Modern Graphic Novel" selected>Modern Graphic Novel</option>
+                            <option value="Classic Golden Age Comic (Jack Kirby style)">Classic Golden Age (Kirby Inks)</option>
+                            <option value="Japanese Shonen Manga / Anime">Japanese Manga / Anime</option>
+                            <option value="Vibrant Retro Pop-Art">Vibrant Retro Pop-Art</option>
+                            <option value="Dark Noir High-Contrast Ink">Dark Noir High-Contrast Ink</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">
+                    &#9889; FORGE 5-PANEL COMIC BOOK! &#9889;
+                </button>
+            </form>
+        </div>
+
+        <!-- Features Bar -->
+        <div class="pipeline-features">
+            <div class="feat-item">&#128221; <strong>Gemini 1.5 Flash:</strong> 5-Panel Pacing & JSON Planner</div>
+            <div class="feat-item">&#9997;&#65039; <strong>Gemini 1.5 Pro:</strong> Captions & Dialogue Script</div>
+            <div class="feat-item">&#127912; <strong>Diffusers SD v1-5:</strong> Comic Illustrations</div>
+            <div class="feat-item">&#128196; <strong>FPDF:</strong> Unicode-Safe PDF Export</div>
+        </div>
+    </div>
+
+    <!-- Loading Screen Modal -->
+    <div id="loading-overlay">
+        <div class="spinner-burst"></div>
+        <div class="loading-title">CRAFTING YOUR COMIC...</div>
+        <div class="loading-step" id="loading-status">Plotting panel outlines with Gemini 1.5 Flash...</div>
+    </div>
+
+    <script>
+        function setPreset(text) {
+            document.getElementById('prompt').value = text;
+        }
+
+        function showLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex';
+            
+            const statusEl = document.getElementById('loading-status');
+            const messages = [
+                "Plotting 5-panel pacing with Gemini 1.5 Flash...",
+                "Writing dialogue & captions with Gemini 1.5 Pro...",
+                "Rendering comic panels with Stable Diffusion...",
+                "Formatting speech bubbles and comic layout...",
+                "Assembling Unicode PDF with DejaVu fonts..."
+            ];
+            let i = 0;
+            setInterval(() => {
+                i = (i + 1) % messages.length;
+                statusEl.innerText = messages[i];
+            }, 3200);
+        }
+    </script>
+</body>
+</html>

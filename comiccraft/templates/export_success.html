@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComicCraft - Export Success</title>
+    <!-- Google Fonts for Comic Book Styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --accent-yellow: #ffdf00;
+            --accent-red: #ff3344;
+            --accent-green: #2ecc71;
+            --comic-border: 4px solid #000;
+            --comic-shadow: 6px 6px 0px #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle, rgba(255, 223, 0, 0.08) 2px, transparent 2px),
+                radial-gradient(circle, rgba(255, 51, 68, 0.05) 1.5px, transparent 1.5px);
+            background-size: 32px 32px;
+            color: #f0f6fc;
+            font-family: 'Comic Neue', cursive, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .success-card {
+            background: #ffffff;
+            color: #111;
+            max-width: 600px;
+            width: 100%;
+            border-radius: 20px;
+            border: var(--comic-border);
+            box-shadow: var(--comic-shadow);
+            padding: 44px 32px;
+            text-align: center;
+            position: relative;
+        }
+
+        .success-burst {
+            width: 90px;
+            height: 90px;
+            background: var(--accent-yellow);
+            border: 3px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            font-size: 2.8rem;
+            box-shadow: 4px 4px 0 #000;
+            transform: rotate(-5deg);
+        }
+
+        .success-title {
+            font-family: 'Bangers', cursive;
+            font-size: 3.4rem;
+            letter-spacing: 2px;
+            color: #000;
+            text-shadow: 2px 2px 0 var(--accent-yellow);
+            margin-bottom: 12px;
+            line-height: 1.1;
+        }
+
+        .success-msg {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #495057;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .pdf-file-badge {
+            background: #f8f9fa;
+            border: 2px dashed #000;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: monospace;
+            font-size: 1rem;
+            color: #212529;
+            margin-bottom: 28px;
+            word-break: break-all;
+        }
+
+        .actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .btn-download {
+            background: var(--accent-green);
+            color: #fff;
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            letter-spacing: 1.5px;
+            padding: 16px 28px;
+            border: 4px solid #000;
+            border-radius: 12px;
+            box-shadow: 5px 5px 0 #000;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.15s ease;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .btn-download:hover {
+            background: #27ae60;
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0 #000;
+        }
+
+        .btn-view {
+            background: var(--accent-yellow);
+            color: #000;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            padding: 12px 24px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            box-shadow: 4px 4px 0 #000;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.15s ease;
+        }
+
+        .btn-view:hover {
+            background: #ffe524;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+
+        .btn-create-another {
+            background: #ffffff;
+            color: #000;
+            font-family: 'Bangers', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            padding: 14px 24px;
+            border: 3px solid #000;
+            border-radius: 10px;
+            box-shadow: 4px 4px 0 #000;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.15s ease;
+            margin-top: 8px;
+        }
+
+        .btn-create-another:hover {
+            background: var(--accent-red);
+            color: #fff;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-card">
+        <div class="success-burst">&#127881;</div>
+        <h1 class="success-title">COMIC BOOK READY!</h1>
+        <p class="success-msg">Your 5-panel masterpiece has been rendered and bound into a publication-ready PDF book.</p>
+
+        <div class="pdf-file-badge">
+            &#128196; Export Path: /{{ pdf_path }}
+        </div>
+
+        <div class="actions-group">
+            <!-- Direct Download Link -->
+            <a href="/{{ pdf_path }}" download class="btn-download">
+                &#11015;&#65039; DOWNLOAD PDF NOW
+            </a>
+
+            <!-- Open in New Tab -->
+            <a href="/{{ pdf_path }}" target="_blank" class="btn-view">
+                &#128065;&#65039; View PDF in Browser
+            </a>
+
+            <!-- Go Create Another Comic Button pointing back to "/" -->
+            <a href="/" class="btn-create-another">
+                &#8592; Go Create Another Comic
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
